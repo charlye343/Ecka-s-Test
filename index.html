@@ -1,81 +1,85 @@
-<!DOCTYPE html><html lang="fr">
+<!DOCTYPE html>
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <title>Éveil de Charlye</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel&display=swap" rel="stylesheet">
   <style>
     body {
-      background: url('https://cdn.pixabay.com/photo/2020/07/01/12/58/dark-5361205_1280.jpg') no-repeat center center fixed;
-      background-size: cover;
-      color: #f0f0f0;
-      font-family: 'Cinzel', serif;
       margin: 0;
       padding: 0;
+      background: url('https://cdn.pixabay.com/photo/2021/01/12/09/58/castle-5910702_1280.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: serif;
+      color: white;
+    }
+    #musicPrompt {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.9);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
     }
     #game {
-      max-width: 600px;
-      margin: auto;
-      background: rgba(20, 20, 20, 0.95);
       padding: 20px;
+      background: rgba(0, 0, 0, 0.7);
+      margin: 80px auto;
+      width: 90%;
+      max-width: 600px;
       border-radius: 10px;
-      box-shadow: 0 0 30px #000000cc;
-      margin-top: 50px;
       display: none;
     }
     .btn {
-      background: linear-gradient(145deg, #5f00ff, #8e2de2);
+      background: #444;
       color: white;
+      padding: 10px 20px;
       border: none;
-      padding: 12px 24px;
-      margin: 10px 5px;
-      border-radius: 12px;
+      margin: 10px;
+      border-radius: 8px;
       cursor: pointer;
-      font-weight: bold;
-      transition: background-color 0.3s ease, transform 0.2s;
     }
     .btn:hover {
-      background-color: #a064ff;
-      transform: scale(1.05);
+      background: #666;
     }
-    #text { padding: 15px; line-height: 1.6; }
-    .narrateur { font-style: italic; color: #ccc; }
   </style>
 </head>
 <body>
-  <div id="musicPrompt" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000000e0;color:white;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;text-align:center;">
-    <p style="font-size: 20px; margin-bottom: 20px;">Ce jeu contient de la musique. Cliquez pour activer le son.</p>
+  <audio id="bgmusic" src="https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Monplaisir/Monplaisir_Dark_Fantasy/Monplaisir_-_01_-_Dark_Fantasy.mp3" loop></audio>
+
+  <div id="musicPrompt">
+    <p>Ce jeu contient de la musique. Cliquez pour l'activer.</p>
     <button class="btn" onclick="enableAudio()">Activer la musique</button>
   </div>
-  <audio id="bgmusic" src="https://cdn.pixabay.com/audio/2023/02/28/audio_0ba7c6e76d.mp3" autoplay loop></audio>  <div style="text-align: center; padding: 10px;">
+
+  <div style="text-align: center;">
     <button class="btn" onclick="toggleMusic()">Pause / Lecture musique</button>
     <button class="btn" onclick="startGame()">Commencer le jeu</button>
-  </div>  <div id="game">
+  </div>
+
+  <div id="game">
     <div id="text"></div>
     <div id="buttons"></div>
-  </div>  <script>
+  </div>
+
+  <script>
+    const bg = document.getElementById("bgmusic");
     function enableAudio() {
-      const bg = document.getElementById("bgmusic");
       bg.play().then(() => {
         document.getElementById("musicPrompt").style.display = "none";
       }).catch(() => {
-        alert("Veuillez autoriser le son dans votre navigateur.");
+        alert("Impossible de lire le son. Activez le son dans votre navigateur.");
       });
     }
-    const bg = document.getElementById("bgmusic");
-    const battleMusic = new Audio("https://cdn.pixabay.com/audio/2022/03/15/audio_95c6a3795a.mp3");
-    const victoryMusic = new Audio("https://cdn.pixabay.com/audio/2021/09/22/audio_9783830b95.mp3");
-    battleMusic.loop = true;
-    victoryMusic.loop = true;
-
-    let hasDagger = false;
 
     function toggleMusic() {
-      if (bg.paused) {
-        bg.play();
-      } else {
-        bg.pause();
-      }
+      if (bg.paused) bg.play();
+      else bg.pause();
     }
+
+    let hasDagger = false;
 
     function showText(html) {
       document.getElementById("text").innerHTML = html;
@@ -94,22 +98,18 @@
     }
 
     function startGame() {
-      if (bg.paused) {
-        bg.play().catch(() => alert("Clique sur le bouton musique pour activer le son si bloqué par le navigateur."));
-      }
-
       document.getElementById("game").style.display = "block";
-      showText("<span class='narrateur'>Un vent glacial s’infiltre par les fissures du plafond. La pierre sous Charlye est froide, humide. Un silence presque sacré règne dans le temple oublié.</span>");
+      showText("Un vent glacial s’infiltre dans le Temple silencieux. Une silhouette rousse repose au centre...");
       showButtons([{ text: "Continuer", action: showZao }]);
     }
 
     function showZao() {
-      showText("<span class='narrateur'>Des pas résonnent... Une silhouette masquée apparaît.</span><br>Zao : <i>Je suis Zao, le Sage. Tu es la sauveuse d’Eckaüs.</i>");
+      showText("Une silhouette s’avance. Un masque étrange, des yeux brillants. <br><i>“Je suis Zao. Tu es la sauveuse de ce monde.”</i>");
       showButtons([{ text: "Sauveuse ?", action: explainZao }]);
     }
 
     function explainZao() {
-      showText("<span class='narrateur'>Un fracas. Une créature surgit des ténèbres.</span><br>Zao tend une dague à Charlye. <i>Prends cette lame. Tu dois te battre.</i>");
+      showText("Une explosion retentit. Une créature difforme surgit des ténèbres.<br>Zao : <i>“Un hybride démoniaque... Tiens, prends cette dague.”</i>");
       showButtons([
         { text: "Prendre la dague", action: takeDagger },
         { text: "Refuser l'arme", action: refuseDagger }
@@ -118,35 +118,25 @@
 
     function takeDagger() {
       hasDagger = true;
-      showText("<span class='narrateur'>Charlye saisit la dague, le regard résolu.</span><br>Zao : <i>Courage...</i>");
+      showText("Charlye saisit la dague, le regard déterminé. Zao recule lentement.<br><i>“Tu es prête.”</i>");
       showButtons([{ text: "Combattre", action: startBattle }]);
     }
 
     function refuseDagger() {
       hasDagger = false;
-      showText("<span class='narrateur'>Charlye recule. Elle fera face sans arme.</span>");
+      showText("Charlye refuse l’arme, mais le monstre s’approche déjà...");
       showButtons([{ text: "Combattre", action: startBattle }]);
     }
 
     function startBattle() {
-      bg.pause();
-      victoryMusic.pause();
-      battleMusic.play();
-
       if (!hasDagger) {
-        showText("<span class='narrateur'>L’hybride charge. Charlye, sans défense, est frappée de plein fouet...</span><br><strong>Elle meurt sur le coup.</strong>");
+        showText("L’hybride charge. Sans arme, Charlye est balayée en un instant...<br><strong>Tu es morte.</strong>");
         showButtons([{ text: "Recommencer", action: () => location.reload() }]);
       } else {
-        showText("<span class='narrateur'>Charlye fonce sur la créature et plante sa lame dans sa chair !</span><br><strong>Victoire !</strong>");
-        showButtons([{ text: "Suite", action: showVictory }]);
+        showText("Charlye esquive, bondit et transperce la créature de sa lame !<br><strong>Victoire !</strong>");
+        showButtons([{ text: "Fin de la démo", action: () => location.reload() }]);
       }
     }
-
-    function showVictory() {
-      battleMusic.pause();
-      victoryMusic.play();
-      showText("<span class='narrateur'>Zao s'avance, le silence retrouvé plane dans les ruines du temple.</span><br><strong>Tu as survécu… pour l’instant.</strong>");
-      showButtons([{ text: "Fin de la démo", action: () => location.reload() }]);
-    }
-  </script></body>
+  </script>
+</body>
 </html>
